@@ -1,19 +1,17 @@
 from risparse import risparse
 from author_aggr import aggregate_authors
 import json
+from data_clean import clean_data_for_network_analysis
+import subprocess
 
 with open("./data/pubmed-39786682-set.txt", "r") as f:
     raw_text = f.read()
 
-
-#for article in pmid_entries:
-
+# TODO - rewrite aggregate_authors function to handle assigning the IDs to each author. 
+# sort authors first then assign an ID followed by counting occurences
+# export file with ID assignments and the file of combinations and counts with IDs instead of names
 articles = risparse(raw_text)
-count, res = aggregate_authors(articles)
-res = dict((' | '.join(k), v) for k,v in dict(res.most_common()).items())
-count = dict(count.most_common())
-with open("data/count.json", "w+") as f:
-    f.write(json.dumps(count, indent=4, ensure_ascii=False))
-with open("data/res.json", "w+") as f:
-    f.write(json.dumps(res, indent=4, ensure_ascii=False))
-#print(json.dumps(articles, indent=4))
+res = aggregate_authors(articles)
+tdt = clean_data_for_network_analysis(res)
+subprocess.call(['java', '-cp', 'src/networkanalysis-1.3.0.jar', 'nl.cwts.networkanalysis.run.RunNetworkLayout', 
+                 '-o', 'layout.txt', 'data/edgelist.txt'])
