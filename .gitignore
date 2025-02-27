@@ -169,3 +169,7 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+count.json
+data/parsed.json
+data/res.json
+data/res.txt
