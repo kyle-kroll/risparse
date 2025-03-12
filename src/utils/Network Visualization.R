@@ -1,0 +1,13 @@
+library(ggplot2)
+setwd("~/Programming/Python/risparse/")
+layoutData <- read.table("layout.txt")
+authorData <- read.delim("data/author_ids.txt", sep = "\t", header = F )
+clusterData <- read.table("cluster.txt")
+colnames(clusterData) <- c("id", "cluster")
+colnames(layoutData) <- c("id", "x", "y")
+colnames(authorData) <- c("name", "id")
+mergedData <- merge(authorData, layoutData, by="id")
+mergedData <- merge(mergedData, clusterData, by="id")
+mergedData$cluster <- factor(mergedData$cluster, levels = c(0: max(mergedData$cluster)))
+ggplot(mergedData, aes(x=x, y=y, color=cluster)) + geom_point()
+x
